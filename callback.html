@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OAuth Callback — cozulmemisdosya</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+           background:#0d1117; color:#e6edf3; margin:0; padding:2rem;
+           display:flex; min-height:100vh; box-sizing:border-box;
+           align-items:center; justify-content:center; }
+    .card { max-width:640px; width:100%; background:#161b22;
+            border:1px solid #30363d; border-radius:12px; padding:1.5rem 1.75rem; }
+    h1 { font-size:1.25rem; margin:0 0 .5rem; }
+    p { color:#9da7b3; line-height:1.5; }
+    .box { margin-top:1rem; background:#0d1117; border:1px solid #30363d;
+           border-radius:8px; padding:1rem; word-break:break-all;
+           font-family:ui-monospace, SFMono-Regular, Consolas, monospace;
+           font-size:1rem; color:#7ee787; }
+    button { margin-top:1rem; background:#238636; color:#fff; border:none;
+             border-radius:8px; padding:.6rem 1.1rem; font-size:1rem;
+             cursor:pointer; }
+    button:hover { background:#2ea043; }
+    .err { color:#ff7b72; }
+    .hint { font-size:.85rem; margin-top:1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Yetkilendirme kodu</h1>
+    <p>Aşağıdaki kodu kopyalayıp uygulamaya (Claude / terminal) yapıştır.</p>
+    <div class="box" id="code">Kod bekleniyor...</div>
+    <button id="copy" onclick="copyCode()">Kodu kopyala</button>
+    <p class="hint" id="hint"></p>
+  </div>
+  <script>
+    var params = new URLSearchParams(window.location.search);
+    var code = params.get("code");
+    var error = params.get("error");
+    var box = document.getElementById("code");
+    if (error) {
+      box.className = "box err";
+      box.textContent = "Hata: " + error + (params.get("error_description") ? " — " + params.get("error_description") : "");
+      document.getElementById("copy").style.display = "none";
+    } else if (code) {
+      box.textContent = code;
+    } else {
+      box.textContent = "URL'de 'code' parametresi yok. Yetkilendirme linkinden buraya yönlendirilmen gerekiyor.";
+      document.getElementById("copy").style.display = "none";
+    }
+    function copyCode() {
+      navigator.clipboard.writeText(code || "").then(function () {
+        document.getElementById("hint").textContent = "Kopyalandi.";
+      });
+    }
+  </script>
+</body>
+</html>
